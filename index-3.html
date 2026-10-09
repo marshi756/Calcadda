@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CalcPointer | Free Online Calculators: Mortgage, Tip, BMI, Age and More</title>
+<meta name="description" content="CalcPointer offers 15 free online calculators: loan, savings, tip, BMI, age, date difference, due date, fuel cost and more. No sign-up.">
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--text:#16202e;--muted:#5d6b7e;--line:#dfe5ee;--brand:#2563eb;--soft:#eaf1ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1420;--card:#172033;--text:#e8eef9;--muted:#9aa8bd;--line:#26324a;--brand:#6ea0ff;--soft:#1c2a47}}
+:root[data-theme="dark"]{--bg:#0e1420;--card:#172033;--text:#e8eef9;--muted:#9aa8bd;--line:#26324a;--brand:#6ea0ff;--soft:#1c2a47}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:22px;color:var(--brand);text-decoration:none;letter-spacing:-.5px}
+main{max-width:720px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:26px;line-height:1.2;margin:6px 0 6px}
+.lead{color:var(--muted);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:16px 6px;background:var(--card);border:1px solid var(--line);border-radius:16px;cursor:pointer;color:var(--text);font:inherit;font-size:13px;font-weight:600}
+.tile span{font-size:30px;width:56px;height:56px;border-radius:16px;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.tile:active{transform:scale(.97)}
+.back{background:none;border:none;color:var(--brand);font:inherit;font-weight:600;padding:6px 0;cursor:pointer}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.panel h2{margin:0 0 4px;font-size:22px}
+.panel p.d{margin:0 0 14px;color:var(--muted);font-size:14px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+input:focus{outline:2px solid var(--brand)}
+.ck{display:flex;align-items:center;gap:8px;color:var(--text);font-size:14px;margin-top:14px}.ck input{width:auto}
+.res{margin-top:16px;border-top:1px solid var(--line);padding-top:6px}
+.r{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.r b{font-size:17px;text-align:right}
+.r.big b{color:var(--brand);font-size:22px}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+.about{margin-top:18px;border-top:1px solid var(--line);padding-top:4px}.about h3{font-size:16px;margin:16px 0 4px}.about p{margin:0;color:var(--muted);font-size:15px}
+footer{max-width:720px;margin:0 auto;padding:10px 14px 30px;color:var(--muted);font-size:13px}
+footer a{color:var(--brand);margin-right:14px;text-decoration:none}
+</style></head>
+<body>
+<header><a class="logo" href="#" onclick="show('');return false">CalcPointer</a></header>
+<main id="app"></main>
+<footer><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a>
+<p>&copy; 2026 CalcPointer. Results are estimates for general information only and are not financial, health or legal advice.</p></footer>
+<script>
+var M=function(n){return n.toLocaleString('en-US',{style:'currency',currency:'USD'})};
+var N=function(n,d){return n.toLocaleString('en-US',{maximumFractionDigits:d==null?2:d})};
+var C=[
+{id:'loan',n:'Loan Payment',i:'🏠',d:'Monthly payment for a mortgage, car or personal loan.',
+ f:[['a','Loan amount ($)',300000],['r','Interest rate (% per year)',6.5],['y','Term (years)',30]],
+ fn:function(v){var n=v.y*12,i=v.r/1200,m=i?v.a*i/(1-Math.pow(1+i,-n)):v.a/n;return[['Monthly payment',M(m),1],['Total paid',M(m*n)],['Total interest',M(m*n-v.a)]]}},
+{id:'compound',n:'Compound Interest',i:'📈',d:'See how savings grow with monthly deposits.',
+ f:[['p','Starting amount ($)',5000],['m','Monthly deposit ($)',200],['r','Annual return (%)',7],['y','Years',20]],
+ fn:function(v){var b=v.p,k=v.y*12;for(var j=0;j<k;j++)b=b*(1+v.r/1200)+v.m;var put=v.p+v.m*k;return[['Final balance',M(b),1],['You put in',M(put)],['Interest earned',M(b-put)]]}},
+{id:'tip',n:'Tip & Split',i:'🍽️',d:'Tip and per-person share of a bill.',
+ f:[['b','Bill ($)',85],['t','Tip (%)',18],['p','People',2]],
+ fn:function(v){var t=v.b*v.t/100,tot=v.b+t,p=Math.max(1,Math.round(v.p));return[['Each person pays',M(tot/p),1],['Tip',M(t)],['Total',M(tot)]]}},
+{id:'percent',n:'Percentage',i:'％',d:'Find a percent of a number, or what percent one number is of another.',
+ f:[['a','Number A',15],['b','Number B',2000]],
+ fn:function(v){return[['A% of B',N(v.a*v.b/100),1],['A is what % of B',v.b?N(v.a/v.b*100)+'%':'-'],['B plus A%',N(v.b*(1+v.a/100))],['B minus A%',N(v.b*(1-v.a/100))]]}},
+{id:'bmi',n:'BMI',i:'⚖️',d:'Body mass index from weight and height (US units).',
+ f:[['w','Weight (lb)',160],['h','Height (inches)',67]],
+ fn:function(v){var b=v.h?703*v.w/(v.h*v.h):0,c=b<18.5?'Underweight':b<25?'Healthy range':b<30?'Overweight':'Obese';return[['BMI',N(b,1),1],['Category',c]]}},
+{id:'age',n:'Age',i:'🎂',d:'Exact age in years, months and days.',
+ f:[['d','Date of birth','1995-06-15','date']],
+ fn:function(v){var b=new Date(v.d),t=new Date();if(isNaN(b)||b>t)return[['Enter a valid past date','-']];var y=t.getFullYear()-b.getFullYear(),m=t.getMonth()-b.getMonth(),d=t.getDate()-b.getDate();if(d<0){m--;d+=new Date(t.getFullYear(),t.getMonth(),0).getDate()}if(m<0){y--;m+=12}return[['Age',y+' yrs, '+m+' mo, '+d+' days',1],['Total days',N(Math.floor((t-b)/864e5),0)]]}},
+{id:'discount',n:'Discount & Tax',i:'🏷️',d:'Final price after a discount and sales tax.',
+ f:[['p','Original price ($)',120],['o','Discount (%)',25],['t','Sales tax (%)',8.25]],
+ fn:function(v){var s=v.p*(1-v.o/100),x=s*v.t/100;return[['Final price',M(s+x),1],['You save',M(v.p-s)],['Sale price',M(s)],['Tax',M(x)]]}},
+{id:'dates',n:'Date Difference',i:'📅',d:'Days between two dates.',
+ f:[['a','From','2026-01-01','date'],['b','To','2026-12-25','date'],['c','Count both start and end day',0,'check']],
+ fn:function(v){var a=new Date(v.a),b=new Date(v.b);if(isNaN(a)||isNaN(b))return[['Pick both dates','-']];var d=Math.round(Math.abs(b-a)/864e5)+(v.c?1:0);return[['Days',N(d,0),1],['Weeks',N(d/7,1)],['Months (approx)',N(d/30.44,1)]]}},
+{id:'hourly',n:'Hourly to Salary',i:'💵',d:'Turn an hourly wage into weekly, monthly and yearly pay.',
+ f:[['r','Hourly rate ($)',25],['h','Hours per week',40],['w','Weeks per year',52]],
+ fn:function(v){var y=v.r*v.h*v.w;return[['Yearly',M(y),1],['Monthly',M(y/12)],['Weekly',M(v.r*v.h)],['Daily (5 days)',M(v.r*v.h/5)]]}},
+{id:'fuel',n:'Fuel Cost',i:'⛽',d:'Estimate the gas cost of a trip.',
+ f:[['m','Trip distance (miles)',300],['g','Fuel economy (MPG)',28],['p','Gas price ($/gallon)',3.5]],
+ fn:function(v){var g=v.g?v.m/v.g:0;return[['Trip cost',M(g*v.p),1],['Gallons needed',N(g)],['Cost per mile',M(v.m?g*v.p/v.m:0)]]}},
+{id:'roi',n:'Investment Return',i:'💹',d:'Total and yearly return on an investment.',
+ f:[['i','Amount invested ($)',10000],['f','Current value ($)',15000],['y','Years held',4]],
+ fn:function(v){var t=v.i?(v.f-v.i)/v.i*100:0,a=v.i>0&&v.y>0&&v.f>0?(Math.pow(v.f/v.i,1/v.y)-1)*100:0;return[['Total return',N(t)+'%',1],['Profit / loss',M(v.f-v.i)],['Annualized return',N(a)+'%']]}},
+{id:'change',n:'Percent Change',i:'🔺',d:'Percentage increase or decrease between two numbers.',
+ f:[['a','Old value',80],['b','New value',100]],
+ fn:function(v){return[['Change',v.a?N((v.b-v.a)/Math.abs(v.a)*100)+'%':'-',1],['Difference',N(v.b-v.a)]]}},
+{id:'due',n:'Due Date',i:'🤰',d:'Estimated due date from the first day of your last period.',
+ f:[['d','First day of last period','2026-08-01','date']],
+ fn:function(v){var l=new Date(v.d);if(isNaN(l))return[['Pick a valid date','-']];var u=new Date(l.getTime()+280*864e5),w=Math.floor((new Date()-l)/864e5/7);return[['Estimated due date',u.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),1],['Weeks now',w>=0&&w<=42?w+' weeks':'-']]}},
+{id:'area',n:'Square Footage',i:'📐',d:'Area of a room or rectangle.',
+ f:[['l','Length (ft)',12],['w','Width (ft)',10]],
+ fn:function(v){var a=v.l*v.w;return[['Square feet',N(a),1],['Square yards',N(a/9)],['Square meters',N(a*0.092903)]]}},
+{id:'goal',n:'Savings Goal',i:'🎯',d:'How long it takes to reach a savings target.',
+ f:[['t','Goal ($)',20000],['c','Saved so far ($)',2000],['m','Monthly deposit ($)',400],['r','Annual return (%)',4]],
+ fn:function(v){var b=v.c,k=0;while(b<v.t&&k<1200){b=b*(1+v.r/1200)+v.m;k++}if(b<v.t)return[['Goal not reachable with these numbers','-']];return[['Time needed',Math.floor(k/12)+' yrs, '+(k%12)+' mo',1],['Total months',N(k,0)]]}}
+];
+var TXT={"loan": ["Enter the amount you borrow, the yearly interest rate and the loan term in years. The calculator splits the loan into equal monthly payments, so each payment covers the interest for that month plus part of the balance. It suits fixed-rate mortgages, car loans and personal loans. Property tax, insurance and lender fees are not included, so your real monthly cost may be higher.", "Monthly payment = P × r ÷ (1 − (1 + r)^−n), where P is the loan amount, r is the monthly rate (annual rate ÷ 12) and n is the number of months.", "A $300,000 loan at 6.5% for 30 years costs about $1,896 per month. Over the full term you would repay roughly $683,000, which means about $383,000 of that is interest."], "compound": ["Compound interest means you earn returns on your earlier returns as well as on your own deposits. Enter a starting amount, a monthly deposit, an expected yearly return and the number of years to see the final balance. Time matters most: the longer the money stays invested, the faster it grows. Real returns change from year to year, so treat the result as an estimate.", "Each month: balance = balance × (1 + annual rate ÷ 12) + monthly deposit, repeated for every month of the period.", "Starting with $5,000 and adding $200 a month at 7% a year for 20 years gives about $124,000. Of that, only $53,000 is money you put in, and the rest is growth."], "tip": ["Type the bill, choose a tip percentage and enter how many people are sharing. You get the tip amount, the total and the share for each person. In the United States 15% to 20% is a common tip at sit-down restaurants, but customs vary by place and service. Tip is calculated on the bill before you add it, so check whether tax is included.", "Tip = bill × tip % ÷ 100. Total = bill + tip. Each person pays = total ÷ number of people.", "On an $85 bill with an 18% tip split between 2 people, the tip is $15.30, the total is $100.30 and each person pays $50.15."], "percent": ["This tool answers the most common percentage questions in one place: what is a percent of a number, what percent one number is of another, and what a number becomes after adding or subtracting a percent. It is handy for discounts, tips, grades, taxes and test scores.", "A% of B = A ÷ 100 × B. A is what percent of B = A ÷ B × 100. B plus A% = B × (1 + A ÷ 100).", "15% of 2,000 is 300. Adding 15% to 2,000 gives 2,300, and subtracting 15% gives 1,700."], "bmi": ["Body mass index compares your weight with your height. Enter your weight in pounds and your height in inches. In general, a BMI under 18.5 is labeled underweight, 18.5 to 24.9 healthy, 25 to 29.9 overweight and 30 or more obese. BMI is only a screening number. It does not measure body fat or muscle, so talk to a doctor for personal health advice.", "BMI = 703 × weight in pounds ÷ (height in inches)².", "A person who weighs 160 lb and is 67 inches tall has a BMI of about 25.1."], "age": ["Choose a date of birth and the calculator shows your exact age in years, months and days, plus the total number of days you have been alive. It uses today as the end date, so the result changes each day. It is useful for forms, school or sports age limits and milestone birthdays.", "Age = today minus date of birth, counted in whole years first, then the remaining months and days.", "Someone born on June 15, 1995 is, on June 15, 2026, exactly 31 years, 0 months and 0 days old."], "discount": ["Enter the original price, the discount percentage and your local sales tax rate. The calculator applies the discount first and then adds tax to the reduced price, which is how most stores work. Sales tax rates differ by state and city, so use the rate shown on your receipt for the most accurate result.", "Sale price = price × (1 − discount ÷ 100). Final price = sale price × (1 + tax ÷ 100).", "A $200 item at 20% off with 8% sales tax: the sale price is $160, the tax is $12.80 and you pay $172.80."], "dates": ["Pick two dates and see how many days, weeks and approximate months are between them. This helps with deadlines, trip planning, project schedules and countdowns. By default the end date is not counted. Tick the box if you want both the first and the last day included, which adds one day.", "Days = absolute difference between the two dates in days (add 1 if both days are counted). Weeks = days ÷ 7.", "From January 1 to December 25 in 2026 is 358 days, or 359 days when both the start and end day are counted."], "hourly": ["Turn an hourly wage into weekly, monthly and yearly pay, or the other way around when planning a budget. Enter your hourly rate, the hours you work each week and the weeks you are paid each year. The result is pay before taxes and deductions, so your take-home pay will be lower.", "Yearly pay = hourly rate × hours per week × weeks per year. Monthly pay = yearly pay ÷ 12.", "$25 an hour for 40 hours a week over 52 weeks is $52,000 a year, or about $4,333 a month before tax."], "fuel": ["Estimate what a trip will cost in fuel. Enter the distance in miles, your vehicle fuel economy in miles per gallon (MPG) and the current price of gas per gallon. Actual cost depends on traffic, speed, load and weather, so keep a small buffer for long drives.", "Gallons needed = miles ÷ MPG. Trip cost = gallons × price per gallon.", "A 300-mile trip in a car that gets 28 MPG, with gas at $3.50 a gallon, uses about 10.7 gallons and costs about $37.50."], "roi": ["Return on investment shows how much an investment gained or lost. Enter what you put in, what it is worth now and how many years you held it. You get the total return, the profit or loss and the annualized return, which lets you compare investments held for different lengths of time. Past results do not guarantee future returns.", "Total return = (current value − amount invested) ÷ amount invested × 100. Annualized return = (current ÷ invested)^(1 ÷ years) − 1.", "Investing $10,000 that grows to $15,000 over 4 years is a 50% total return, or about 10.7% per year."], "change": ["Percent change tells you how much a value went up or down compared with where it started. Enter the old value and the new value. A positive result is an increase and a negative result is a decrease. It is useful for prices, salaries, website traffic, savings and test scores.", "Percent change = (new value − old value) ÷ |old value| × 100.", "A price that rises from 80 to 100 is a 25% increase. Going back from 100 to 80 is a 20% decrease, because the starting point is different."], "due": ["Enter the first day of your last menstrual period and the calculator estimates your due date by adding 280 days, which is 40 weeks. This is the standard method known as Naegele rule. It assumes a regular 28-day cycle, and only a small share of babies arrive exactly on the estimated date. Your doctor or midwife can confirm your date with an ultrasound.", "Estimated due date = first day of last period + 280 days.", "If the last period began on August 1, 2026, the estimated due date is May 8, 2027."], "area": ["Enter the length and width of a room, lot or any rectangle in feet. The calculator gives the area in square feet, square yards and square meters. It is useful for flooring, paint, carpet, tiles and real estate listings. For irregular rooms, split the space into rectangles, calculate each one and add the results.", "Area in square feet = length × width. Square yards = square feet ÷ 9. Square meters = square feet × 0.092903.", "A room that measures 12 feet by 10 feet is 120 square feet, which is about 13.3 square yards or 11.15 square meters."], "goal": ["Set a savings target, enter how much you have saved so far, what you add each month and the yearly return you expect. The calculator shows how long it will take to reach your goal. If the numbers can never reach the target, it will tell you. Raising your monthly deposit usually shortens the time more than hoping for a higher return.", "Each month: balance = balance × (1 + annual rate ÷ 12) + monthly deposit, repeated until the balance reaches the goal.", "To reach $20,000 starting from $2,000 with $400 a month at 4% a year takes about 3 years and 6 months."]};
+function about(id){var t=TXT[id];return t?'<div class="about"><h3>How this calculator works</h3><p>'+t[0]+'</p><h3>The formula</h3><p>'+t[1]+'</p><h3>Example</h3><p>'+t[2]+'</p></div>':''}
+var app=document.getElementById('app');
+function home(){
+  var h='<h1>Free Online Calculators</h1><p class="lead">Tap a tool to open it. No sign-up. Everything runs in your browser.</p><div class="grid">';
+  C.forEach(function(c){h+='<button class="tile" onclick="show(\''+c.id+'\')"><span>'+c.i+'</span>'+c.n+'</button>'});
+  app.innerHTML=h+'</div><div class="about"><h3>About CalcPointer</h3><p>CalcPointer is a free collection of simple calculators for everyday money, health, date and home questions. Pick a tool above, enter your numbers and get an instant result. Nothing you type is saved or sent anywhere, and no sign-up is needed. Each calculator explains the formula it uses, so you can check the math yourself.</p></div>';document.title='CalcPointer | Free Online Calculators';
+}
+function calc(c){
+  var h='<button class="back" onclick="show(\'\')">&larr; All calculators</button><div class="panel"><h2>'+c.n+' Calculator</h2><p class="d">'+c.d+'</p>';
+  c.f.forEach(function(f,k){h+=f[3]==='check'?'<label class="ck"><input id="f'+k+'" type="checkbox" onchange="upd()"> '+f[1]+'</label>':'<label for="f'+k+'">'+f[1]+'</label><input id="f'+k+'" type="'+(f[3]||'number')+'" inputmode="'+(f[3]?'text':'decimal')+'" step="any" value="'+f[2]+'" oninput="upd()">'});
+  app.innerHTML=h+'<div class="res" id="res"></div><p class="note">Estimates only, not professional advice.</p>'+about(c.id)+'</div>';
+  window.cur=c;document.title=c.n+' Calculator | CalcPointer';upd();
+}
+function upd(){
+  var c=window.cur,v={};
+  c.f.forEach(function(f,k){var el=document.getElementById('f'+k),x=el.value;v[f[0]]=f[3]==='check'?el.checked:f[3]?x:(parseFloat(x)||0)});
+  var h='';c.fn(v).forEach(function(r){h+='<div class="r'+(r[2]?' big':'')+'"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'});
+  document.getElementById('res').innerHTML=h;
+}
+function show(id){
+  var c=C.filter(function(x){return x.id===id})[0];
+  try{history.replaceState(null,'',c?'#'+id:location.pathname)}catch(e){}
+  c?calc(c):home();window.scrollTo(0,0);
+}
+show(location.hash.slice(1));
+</script></body></html>
