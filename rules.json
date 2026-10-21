@@ -1,0 +1,82 @@
+{
+ "verified": "2026-10-11",
+ "banner": "",
+ "gst": [
+  [
+   "5",
+   "India GST 5%"
+  ],
+  [
+   "18",
+   "India GST 18%"
+  ],
+  [
+   "40",
+   "India GST 40%"
+  ],
+  [
+   "3",
+   "India GST 3% (gold)"
+  ],
+  [
+   "15",
+   "Saudi Arabia VAT 15%"
+  ],
+  [
+   "5",
+   "UAE VAT 5%"
+  ],
+  [
+   "10",
+   "Bahrain VAT 10%"
+  ],
+  [
+   "5",
+   "Oman VAT 5%"
+  ],
+  [
+   "20",
+   "UK VAT 20%"
+  ],
+  [
+   "19",
+   "Germany VAT 19%"
+  ],
+  [
+   "5",
+   "Canada GST 5%"
+  ],
+  [
+   "10",
+   "Australia GST 10%"
+  ],
+  [
+   "9",
+   "Singapore GST 9%"
+  ]
+ ],
+ "zakat": {
+  "gold_g": 85,
+  "silver_g": 595,
+  "rate": 2.5
+ },
+ "caps": {
+  "gratuity_in": 2000000,
+  "uae_months": 24,
+  "kuwait_months": 18
+ },
+ "metals": {
+  "auto": true
+ },
+ "oman": {
+  "law_date": "2023-07-31"
+ },
+ "ads": {
+  "on": false,
+  "client": "ca-pub-3737091947736959",
+  "slots": {
+   "below": "8237075406",
+   "side": "2921169544"
+  }
+ }
+}

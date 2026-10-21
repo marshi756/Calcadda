@@ -1,23 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://calcpointer.com/</loc></url>
-<url><loc>https://calcpointer.com/loan-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/compound-interest-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/tip-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/percentage-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/bmi-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/age-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/discount-and-sales-tax-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/date-difference-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/hourly-to-salary-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/gas-fuel-cost-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/investment-return-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/percent-change-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/pregnancy-due-date-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/square-footage-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/savings-goal-calculator.html</loc></url>
-<url><loc>https://calcpointer.com/about.html</loc></url>
-<url><loc>https://calcpointer.com/contact.html</loc></url>
-<url><loc>https://calcpointer.com/privacy.html</loc></url>
-<url><loc>https://calcpointer.com/unit-converter.html</loc></url>
+  <url><loc>https://calcpointer.com/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar.html</loc><lastmod>2026-10-11</lastmod></url>
+  <url><loc>https://calcpointer.com/hi.html</loc><lastmod>2026-10-11</lastmod></url>
+  <url><loc>https://calcpointer.com/loan-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-loan-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/compound-interest-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/savings-goal-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/investment-return-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/sip-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-sip-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/fd-rd-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-fd-rd-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/currency-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-currency-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-currency-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hourly-to-salary-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/gst-vat-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-gst-vat-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-gst-vat-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/discount-and-sales-tax-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/tip-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/saudi-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-saudi-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/zakat-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-zakat-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/gratuity-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-gratuity-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/bmi-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-bmi-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/calorie-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/food-calorie-counter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/pregnancy-due-date-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/percentage-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hi-percentage-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/percent-change-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/quadratic-equation-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/unit-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/age-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/date-difference-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/gas-fuel-cost-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/square-footage-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/hijri-gregorian-date-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-hijri-gregorian-date-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/saudi-overtime-pay-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-saudi-overtime-pay-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/uae-gratuity-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-uae-gratuity-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/qatar-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-qatar-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/kuwait-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/ar-kuwait-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/mortgage-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/time-zone-converter.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/cgpa-to-percentage-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/oman-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/bahrain-end-of-service-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/gold-rate-calculator.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/math-formula-sheet.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/study-planner.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/gulf-end-of-service-comparison.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/about.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/contact.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/privacy.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/saudi-end-of-service-guide.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/uae-gratuity-guide.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/qatar-kuwait-end-of-service-guide.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/india-gratuity-guide.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/india-gst-rates-guide.html</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://calcpointer.com/oman-bahrain-end-of-service-guide.html</loc><lastmod>2026-10-19</lastmod></url>
 </urlset>
