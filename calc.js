@@ -2,10 +2,11 @@
    After AdSense approval, set ADS_ON = true to show the reserved ad slots. */
 (function (root) {
 'use strict';
-var ADS_ON = false;
+var ADS_ON = true;
 function L(){ return (typeof global!=='undefined'&&global.CP_LANG)||root.CP_LANG||(typeof document!=='undefined'&&document.documentElement.lang)||'en'; }
 function T(s,v){ var d=root.CP_I18N&&root.CP_I18N[s]; var t=d||s; if(v) t=t.replace(/\{(\w+)\}/g,function(m,k){ return v[k]!=null?v[k]:m; }); return t; }
 function sloc(){ var l=L(); return l==='ar'?'ar-SA':l==='hi'?'hi-IN':'en'; }
+function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 /* ---------- constants ---------- */
 var KM_MI = 1.609344, L_US = 3.785411784, L_UK = 4.54609, K_US = 235.214583, K_UK = 282.480936;
@@ -124,6 +125,54 @@ def('loan',{ f:[
   if(v.x>0){ var b=v.a,k=0,ti=0,pay=m+v.x; while(b>0.005&&k<1200){ var it=b*i; ti+=it; b=b+it-pay; k++; }
     rows.push(['With extra payment, paid off in',ymTxt(k)],['Interest saved',X.M(tot-v.a-ti)],['Time saved',ymTxt(n-k)]); }
   return rows; }});
+
+def('carloan',{ f:[
+  {k:'p',l:'Car price ({c})',d:function(R){return R.cur==='INR'?1200000:sc(R.cur,35000);}},
+  {k:'d',l:'Down payment ({c})',d:function(R){return R.cur==='INR'?200000:sc(R.cur,5000);},opt:1},
+  {k:'r',l:'Interest rate (% per year)',d:function(R){return R.cur==='INR'?9.5:R.cur==='USD'?6.5:7;}},
+  {k:'y',l:'Loan term (years)',d:function(R){return R.cur==='USD'?5:R.cur==='INR'?5:4;}},
+  {k:'t',l:'Trade-in value ({c}), optional',d:0,opt:1},
+  {k:'f',l:'Fees / taxes added to loan ({c}), optional',d:0,opt:1}
+], fn:function(v,X){
+  if(!(v.p>0)||v.r<0||!(v.y>0)) return NEED;
+  var down=Math.max(0,v.d||0), trade=Math.max(0,v.t||0), fees=Math.max(0,v.f||0);
+  var principal=Math.max(0,v.p-down-trade+fees);
+  if(!(principal>0)) return {err:'Down payment and trade-in cover the full price. No loan needed.'};
+  var n=Math.round(v.y*12), i=v.r/1200;
+  var m=i?principal*i/(1-Math.pow(1+i,-n)):principal/n;
+  var tot=m*n;
+  return [['Monthly payment',X.M(m),1],['Loan amount',X.M(principal)],['Total of all payments',X.M(tot)],
+    ['Total interest',X.M(tot-principal)],['Down payment + trade-in',X.M(down+trade)],['Interest share',X.P((tot-principal)/tot*100,1)]];
+}});
+
+def('afford',{ f:[
+  {k:'i',l:'Gross monthly income ({c})',d:function(R){return R.cur==='INR'?80000:sc(R.cur,6000);}},
+  {k:'d',l:'Monthly debts (car, loans, cards) ({c})',d:function(R){return sc(R.cur,400);},opt:1},
+  {k:'r',l:'Mortgage interest rate (% per year)',d:function(R){return R.cur==='INR'?8.5:R.cur==='USD'?6.5:5.5;}},
+  {k:'y',l:'Loan term (years)',d:function(R){return R.cur==='INR'?20:30;}},
+  {k:'dp',l:'Down payment (%)',d:20},
+  {k:'tx',l:'Estimated property tax + insurance (% of price / year)',d:function(R){return R.cur==='USD'?1.5:0.5;},opt:1}
+], fn:function(v,X){
+  if(!(v.i>0)||v.r<0||!(v.y>0)||v.dp<0||v.dp>=100) return NEED;
+  // Conservative rule: housing payment <= 28% of gross income (front-end), total debts <= 36%
+  var maxHousing=v.i*0.28, maxTotal=v.i*0.36, debts=Math.max(0,v.d||0);
+  var maxPITI=Math.max(0,Math.min(maxHousing, maxTotal-debts));
+  if(maxPITI<=0) return {err:'Monthly debts are too high relative to income under common 28/36 guidelines.'};
+  var n=Math.round(v.y*12), i=v.r/1200, taxInsRate=(v.tx||0)/100/12;
+  // Solve for price P: monthly PI on loan (P*(1-dp/100)) + P*taxInsRate <= maxPITI
+  var loanFrac=1-v.dp/100;
+  var piFactor=i?loanFrac*i/(1-Math.pow(1+i,-n)):loanFrac/n;
+  var totalFactor=piFactor+taxInsRate;
+  if(totalFactor<=0) return NEED;
+  var maxPrice=maxPITI/totalFactor;
+  var loanAmt=maxPrice*loanFrac;
+  var monthlyPI=i?loanAmt*i/(1-Math.pow(1+i,-n)):loanAmt/n;
+  var monthlyTax=maxPrice*taxInsRate;
+  return [['You can afford about',X.M(maxPrice),1],['Suggested max home price',X.M(maxPrice)],
+    ['Loan amount (after down payment)',X.M(loanAmt)],['Estimated monthly principal & interest',X.M(monthlyPI)],
+    ['Est. monthly tax + insurance',X.M(monthlyTax)],['Total estimated housing payment',X.M(monthlyPI+monthlyTax)],
+    ['Rule used','28% of income for housing (common guideline)']];
+}});
 
 def('compound',{ f:[
   {k:'p',l:'Starting amount ({c})',d:function(R){return sc(R.cur,5000);}},
@@ -613,11 +662,12 @@ function loadRates(done){
   var c=null; try { c=JSON.parse(sg('cp_rates')||'null'); } catch(e){}
   if(c&&c.r&&Date.now()-c.t<3600e3){ RATES=c.r; RMETA={live:true,upd:c.u}; done(); return; }
   if(c&&c.r){ RATES=c.r; RMETA={live:true,upd:c.u}; }
-  if(typeof fetch==='undefined'){ done(); return; }
+  if(typeof fetch==='undefined'){ RMETA={live:false,upd:RMETA.upd||''}; done(); return; }
   fetch('https://open.er-api.com/v6/latest/USD').then(function(r){ return r.json(); }).then(function(j){
     if(j&&j.result==='success'&&j.rates&&j.rates.INR){ RATES=j.rates; var u=(j.time_last_update_utc||'').replace(/ \+0000$/,' UTC'); RMETA={live:true,upd:u};
       ss('cp_rates',JSON.stringify({t:Date.now(),r:j.rates,u:u})); }
-    done(); }).catch(function(){ done(); });
+    else { RMETA={live:false,upd:RMETA.upd||''}; }
+    done(); }).catch(function(){ RMETA={live:false,upd:RMETA.upd||''}; done(); });
 }
 
 /* ---------- live rules (law, tax rates, caps) ---------- */
@@ -761,8 +811,8 @@ function update(){
   for(var i=0;i<CAL.f.length;i++){ var f=CAL.f[i]; if(f.t==='s'||f.t==='d'||f.t==='t'||f.t==='c'||f.t==='b') continue; if(f.sh&&!f.sh(v)) continue; if(!f.opt&&isNaN(v[f.k])){ vis.push(f); } }
   var out=$('res'); var res;
   if(vis.length) res=NEED; else { try { res=CAL.fn(v,X); } catch(e){ res={err:'Something went wrong. Check your numbers.'}; } }
-  if(res&&res.err){ out.innerHTML='<p class="err">'+T(res.err)+'</p>'; $('big').textContent='\u2014'; $('bigl').textContent=''; return; }
-  var h='', big=null; res.forEach(function(r){ r=[T(r[0]),T(String(r[1])),r[2]]; if(r[2]&&!big) big=r; else h+='<div class="r"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'; });
+  if(res&&res.err){ out.innerHTML='<p class="err">'+escapeHtml(T(res.err))+'</p>'; $('big').textContent='\u2014'; $('bigl').textContent=''; return; }
+  var h='', big=null; res.forEach(function(r){ r=[T(r[0]),T(String(r[1])),r[2]]; if(r[2]&&!big) big=r; else h+='<div class="r"><span>'+escapeHtml(r[0])+'</span><b>'+escapeHtml(r[1])+'</b></div>'; });
   if(big){ $('bigl').textContent=big[0]; $('big').textContent=big[1]; } else { $('bigl').textContent=''; $('big').textContent=''; }
   out.innerHTML=h;
 }
@@ -813,12 +863,29 @@ function initHeader(){
 
 function miniBar(){
   var res=document.querySelector('.result'), big=$('big'); if(!res||!big||typeof IntersectionObserver==='undefined') return;
-  var bar=document.createElement('div'); bar.className='minibar'; bar.setAttribute('aria-hidden','true'); bar.hidden=true; document.body.appendChild(bar);
-  var vis=true, sync=function(){ bar.textContent=($('bigl').textContent?$('bigl').textContent+': ':'')+big.textContent; bar.hidden=vis||big.textContent==='\u2014'; };
-  new IntersectionObserver(function(en){ vis=en[0].isIntersecting; sync(); }).observe(res);
-  new MutationObserver(sync).observe(big,{childList:true,characterData:true,subtree:true});
+  var bar=document.createElement('div'); bar.className='minibar'; bar.setAttribute('role','status'); bar.setAttribute('aria-live','polite'); bar.hidden=true; document.body.appendChild(bar);
+  var vis=true;
+  var sync=function(){
+    var label=($('bigl')&&$('bigl').textContent)?$('bigl').textContent+': ':'';
+    var val=big.textContent||'';
+    bar.textContent=label+val;
+    bar.hidden=vis || !val || val==='\u2014' || val==='-';
+  };
+  try{
+    new IntersectionObserver(function(en){ vis=en[0].isIntersecting; sync(); },{threshold:0.12,rootMargin:'0px 0px -18% 0px'}).observe(res);
+    new MutationObserver(sync).observe(big,{childList:true,characterData:true,subtree:true});
+  }catch(e){}
 }
+
+/* PWA service worker registration */
+function registerSW(){
+  if(typeof navigator==='undefined'||!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+}
+
 function boot(){
+  try{registerSW();}catch(e){}
+
   R.cur=sg('cp_cur')&&CUR[sg('cp_cur')]?sg('cp_cur'):guessCur();
   initHeader();
   var id=document.body.getAttribute('data-calc'); CAL=id?CALCS[id]:null;

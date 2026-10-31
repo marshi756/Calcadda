@@ -72,7 +72,7 @@
   "law_date": "2023-07-31"
  },
  "ads": {
-  "on": false,
+  "on": true,
   "client": "ca-pub-3737091947736959",
   "slots": {
    "below": "8237075406",
