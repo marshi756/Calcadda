@@ -632,7 +632,7 @@ def('mortgage',{ f:[
   var L=v.p*(1-v.dp/100), n=Math.round(v.y*12), i=v.r/1200, pi=i?L*i/(1-Math.pow(1+i,-n)):L/n, tax=v.p*v.tx/100/12, ins=v.ins/12, tot=pi+tax+ins+v.hoa;
   return [['Total monthly payment',X.M(tot),1],['Principal and interest',X.M(pi)],['Property tax',X.M(tax)],['Home insurance',X.M(ins)],['HOA or maintenance',X.M(v.hoa)],['Loan amount',X.M(L)],['Down payment',X.M(v.p-L)],['Total interest over the term',X.M(pi*n-L)]]; }});
 
-var TZ=[['Asia/Riyadh','Riyadh (Saudi Arabia)'],['Asia/Dubai','Dubai (UAE)'],['Asia/Qatar','Doha (Qatar)'],['Asia/Kuwait','Kuwait City'],['Asia/Bahrain','Manama (Bahrain)'],['Asia/Muscat','Muscat (Oman)'],['Asia/Kolkata','New Delhi / Mumbai (India)'],['Asia/Karachi','Karachi (Pakistan)'],['Asia/Dhaka','Dhaka (Bangladesh)'],['Europe/London','London (UK)'],['Europe/Paris','Paris / Berlin (Europe)'],['Europe/Istanbul','Istanbul (Turkey)'],['Africa/Cairo','Cairo (Egypt)'],['America/New_York','New York (US East)'],['America/Chicago','Chicago (US Central)'],['America/Los_Angeles','Los Angeles (US West)'],['America/Toronto','Toronto (Canada)'],['Australia/Sydney','Sydney (Australia)'],['Asia/Singapore','Singapore'],['Asia/Tokyo','Tokyo (Japan)']];
+var TZ=[['Asia/Riyadh','Riyadh (Saudi Arabia)'],['Asia/Dubai','Dubai (UAE)'],['Asia/Qatar','Doha (Qatar)'],['Asia/Kuwait','Kuwait City'],['Asia/Bahrain','Manama (Bahrain)'],['Asia/Muscat','Muscat (Oman)'],['Asia/Kolkata','New Delhi / Mumbai (India)'],['Asia/Karachi','Karachi (Pakistan)'],['Asia/Dhaka','Dhaka (Bangladesh)'],['Asia/Jakarta','Jakarta (Indonesia)'],['Asia/Shanghai','Shanghai / Beijing (China)'],['Asia/Singapore','Singapore'],['Asia/Tokyo','Tokyo (Japan)'],['Asia/Seoul','Seoul (South Korea)'],['Europe/London','London (UK)'],['Europe/Paris','Paris / Berlin (Europe)'],['Europe/Istanbul','Istanbul (Turkey)'],['Europe/Moscow','Moscow (Russia)'],['Africa/Cairo','Cairo (Egypt)'],['Africa/Johannesburg','Johannesburg (South Africa)'],['America/New_York','New York (US East)'],['America/Chicago','Chicago (US Central)'],['America/Denver','Denver (US Mountain)'],['America/Los_Angeles','Los Angeles (US West)'],['America/Toronto','Toronto (Canada)'],['America/Mexico_City','Mexico City'],['America/Sao_Paulo','São Paulo (Brazil)'],['Australia/Sydney','Sydney (Australia)'],['Australia/Perth','Perth (Australia)'],['Pacific/Auckland','Auckland (New Zealand)']];
 function zoneOffset(tz,ms){ var p={}; new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date(ms)).forEach(function(x){ p[x.type]=x.value; }); return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second)-ms; }
 function localToUtc(tz,y,m,d,hh,mm){ var g=Date.UTC(y,m-1,d,hh,mm), o=zoneOffset(tz,g), u=g-o, o2=zoneOffset(tz,u); if(o2!==o) u=g-o2; return u; }
 function tzFmt(ms,tz){ return new Intl.DateTimeFormat('en-GB',{timeZone:tz,weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(ms)); }
@@ -878,13 +878,38 @@ function miniBar(){
 }
 
 /* PWA service worker registration */
+
+/* PWA install prompt */
+var deferredInstall = null;
+function setupInstall(){
+  if(typeof window==='undefined') return;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredInstall = e;
+    var b = document.getElementById('cp-install');
+    if(b) b.hidden = false;
+  });
+  window.addEventListener('appinstalled', function(){
+    deferredInstall = null;
+    var b = document.getElementById('cp-install');
+    if(b) b.hidden = true;
+  });
+}
+function triggerInstall(){
+  if(!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.finally(function(){ deferredInstall = null;
+    var b = document.getElementById('cp-install'); if(b) b.hidden = true;
+  });
+}
+
 function registerSW(){
   if(typeof navigator==='undefined'||!('serviceWorker' in navigator)) return;
   navigator.serviceWorker.register('/service-worker.js').catch(function(){});
 }
 
 function boot(){
-  try{registerSW();}catch(e){}
+  try{registerSW();setupInstall();}catch(e){}
 
   R.cur=sg('cp_cur')&&CUR[sg('cp_cur')]?sg('cp_cur'):guessCur();
   initHeader();
