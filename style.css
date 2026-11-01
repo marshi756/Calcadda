@@ -827,3 +827,70 @@ footer {
   .panel, .result { border-radius: 16px !important; }
   #big { font-size: clamp(34px, 11vw, 46px) !important; }
 }
+
+/* ========== Bigger bold tile icons + UI polish ========== */
+.tile .ic {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 18px !important;
+  font-size: 32px !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.04);
+}
+.tile {
+  gap: 14px !important;
+  padding: 18px 16px !important;
+}
+.tile b {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.02em;
+}
+.tile small {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+/* Theme toggle more visible */
+#cp-theme {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid var(--line) !important;
+  background: var(--field) !important;
+  font-size: 20px !important;
+}
+#cp-theme:hover {
+  border-color: var(--blue) !important;
+  background: var(--surface) !important;
+}
+
+/* Country chips: clearer, less cramped */
+.countries, .country-list, .picks, .flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 10px !important;
+}
+.countries button, .country-list button, .picks button, .flags button,
+button[data-c], .chip-country {
+  padding: 10px 14px !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  min-height: 42px;
+}
+
+/* Dark mode cards stay readable */
+:root[data-theme="dark"] .tile,
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tile {
+    background: #152238 !important;
+    border-color: #2A3B55 !important;
+  }
+  :root:not([data-theme="light"]) .tile .ic {
+    box-shadow: none;
+  }
+}
+:root[data-theme="dark"] .tile {
+  background: #152238 !important;
+  border-color: #2A3B55 !important;
+}
