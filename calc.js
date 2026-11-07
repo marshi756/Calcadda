@@ -406,12 +406,13 @@ def('eosb',{ fixCur:'SAR', f:[
   {k:'w',l:'Last monthly wage, basic plus regular allowances ({c})',d:8000},
   {k:'s',t:'d',l:'Start date',d:function(){return iso(new Date(today().getFullYear()-4,today().getMonth(),1));}},
   {k:'e',t:'d',l:'Last working day',d:function(){return iso(today());}},
-  {k:'ty',t:'s',l:'How did employment end?',o:[['term','Employer ended the contract, or it expired'],['resign','Employee resigned'],['full','Full-award case (for example Article 81 or force majeure)']],d:'term'}
+  {k:'ty',t:'s',l:'How did employment end?',o:[['term','Employer ended the contract, or it expired'],['resign','Employee resigned'],['full','Full-award case (for example Article 81 or force majeure)'],['dismiss','Dismissed for serious misconduct (Article 80), no award']],d:'term'}
 ], fn:function(v,X){
   var s=pd(v.s), e=pd(v.e); if(!s||!e||e<=s||!(v.w>0)) return {err:'Enter a wage and a valid start and end date.'};
   var p=ymd(s,e), yrs=p[0]+p[1]/12+p[2]/365;
   var full=yrs<=5?0.5*v.w*yrs:0.5*v.w*5+v.w*(yrs-5), f=1, tag='Full award';
-  if(v.ty==='resign'){ if(yrs<2){ f=0; tag='Nothing (under 2 years)'; } else if(yrs<=5){ f=1/3; tag='One third'; } else if(yrs<10){ f=2/3; tag='Two thirds'; } else { f=1; tag='Full award (10 years or more)'; } }
+  if(v.ty==='dismiss'){ return [['End-of-service award',X.M(0),1],['Service period',X.T('{y} years, {m} months, {d} days',{y:p[0],m:p[1],d:p[2]})],['Share applied',"Nothing (Article 80 dismissal)"]]; }
+  if(v.ty==='resign'){ if(yrs<2){ f=0; tag='Nothing (under 2 years)'; } else if(yrs<5){ f=1/3; tag='One third'; } else if(yrs<10){ f=2/3; tag='Two thirds'; } else { f=1; tag='Full award (10 years or more)'; } }
   var due=full*f;
   return [['End-of-service award',X.M(due),1],['Service period',X.T('{y} years, {m} months, {d} days',{y:p[0],m:p[1],d:p[2]})],['Full award before resignation reduction',X.M(full)],['Share applied',tag],['Equal to',X.T('{n} months of wage',{n:X.N(due/v.w,2)})]]; }});
 
@@ -826,7 +827,7 @@ function applyRegion(reset){
 
 function initHeader(){
   var slot=$('cur-slot');
-  if(slot){ var h='<select id="cp-cur" aria-label="Country or currency">'; Object.keys(CUR).forEach(function(c){ h+='<option value="'+c+'">'+c+' '+symOf(c)+'</option>'; }); slot.innerHTML=h+'</select>';
+  if(slot){ var h='<select id="cp-cur" aria-label="Country or currency">'; Object.keys(CUR).forEach(function(c){ var sy=symOf(c); h+='<option value="'+c+'">'+c+(sy&&sy!==c?' '+sy:'')+'</option>'; }); slot.innerHTML=h+'</select>';
     var s=$('cp-cur'); s.value=R.cur; s.addEventListener('change',function(){ R.cur=s.value; ss('cp_cur',R.cur); if(CAL){ applyRegion(false); } }); }
   var t=$('cp-theme');
   if(t){ var cur=sg('cp_theme'); if(cur) document.documentElement.setAttribute('data-theme',cur);
