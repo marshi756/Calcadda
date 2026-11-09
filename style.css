@@ -1009,3 +1009,11 @@ select:hover{ border-color:var(--blue); }
 /* v23: header no longer clips or overlaps when items wrap on small phones */
 header.top .wrap{height:auto;min-height:64px;flex-wrap:wrap;row-gap:8px;padding-top:8px;padding-bottom:8px;align-items:center}
 header.top .lang{position:static;order:5;width:100%;display:flex;flex-wrap:wrap;gap:6px}
+
+/* v25: compact header on phones; currency box keeps its own width so the dark-mode button stays in the first row */
+header.top select{ width:auto; min-width:120px; max-width:170px; height:40px; }
+header.top .wrap{ gap:8px; }
+@media (max-width:760px){
+  header.top .logo{ font-size:20px; }
+  .minibar{ display:none !important; }
+}
