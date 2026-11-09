@@ -865,13 +865,20 @@ function initHeader(){
 function miniBar(){
   var res=document.querySelector('.result'), big=$('big'); if(!res||!big||typeof IntersectionObserver==='undefined') return;
   var bar=document.createElement('div'); bar.className='minibar'; bar.setAttribute('role','status'); bar.setAttribute('aria-live','polite'); bar.hidden=true; document.body.appendChild(bar);
-  var vis=true;
+  var vis=true, typing=false;
   var sync=function(){
     var label=($('bigl')&&$('bigl').textContent)?$('bigl').textContent+': ':'';
     var val=big.textContent||'';
     bar.textContent=label+val;
-    bar.hidden=vis || !val || val==='\u2014' || val==='-';
+    bar.hidden=vis || typing || !val || val==='\u2014' || val==='-';
   };
+  document.addEventListener('focusin',function(e){
+    typing=!!(e.target && e.target.matches && e.target.matches('input,select,textarea'));
+    sync();
+  });
+  document.addEventListener('focusout',function(){
+    setTimeout(function(){ typing=false; sync(); },200);
+  });
   try{
     new IntersectionObserver(function(en){ vis=en[0].isIntersecting; sync(); },{threshold:0.12,rootMargin:'0px 0px -18% 0px'}).observe(res);
     new MutationObserver(sync).observe(big,{childList:true,characterData:true,subtree:true});
