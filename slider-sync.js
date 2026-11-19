@@ -9,8 +9,10 @@
   }
   function enhance(input){
     if(input.dataset.slider) return;
+    var lbl=(wrap.querySelector('label')||{}).textContent||'';
+    if(/optional|type it/i.test(lbl)) return;   /* optional price fields: no slider, so dragging can't overwrite a live price */
     if(input.type!=='number') return;
-    var wrap=input.closest('.f'); if(!wrap) return;
+    var wrap=input.closest(".f"); if(!wrap) return;
     input.dataset.slider='1';
     var v=parseFloat(input.value); if(isNaN(v)) v=0;
     var min=input.hasAttribute('min')?parseFloat(input.min):(v<0?v*3:0);
@@ -20,7 +22,13 @@
     var r=document.createElement('input'); r.type='range'; r.className='cp-range';
     r.min=min; r.max=max; r.step=niceStep(max-min); r.value=Math.min(Math.max(v,min),max);
     r.setAttribute('aria-label', (wrap.querySelector('label')||{}).textContent||'Slider');
-    row.appendChild(r); wrap.appendChild(row);
+    row.appendChild(r);
+    var lab=document.createElement('div'); lab.className='slider-scale';
+    var lo=document.createElement('span'); lo.textContent=min;
+    var hi=document.createElement('span'); hi.textContent=max;
+    lab.appendChild(lo); lab.appendChild(hi); row.appendChild(lab);
+    r.addEventListener('input',function(){ hi.textContent=r.max; });
+    wrap.appendChild(row);
     r.addEventListener('input',function(){
       input.value=r.value;
       input.dispatchEvent(new Event('input',{bubbles:true}));

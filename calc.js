@@ -126,6 +126,58 @@ def('loan',{ f:[
     rows.push(['With extra payment, paid off in',ymTxt(k)],['Interest saved',X.M(tot-v.a-ti)],['Time saved',ymTxt(n-k)]); }
   return rows; }});
 
+def('paint',{ f:[
+  {k:'u',t:'s',l:'Unit you measure in',o:[['m','Metres'],['ft','Feet']],d:'m'},
+  {k:'l',l:'Room length',d:4},
+  {k:'w',l:'Room width',d:3},
+  {k:'h',l:'Wall height',d:2.7},
+  {k:'x',l:'Doors and windows to subtract (total area, same unit squared)',d:0,opt:1},
+  {k:'c',l:'Number of coats',d:2},
+  {k:'cv',l:'Coverage per litre (square metres), usually 10 to 12',d:10}
+], fn:function(v,X){
+  if(!(v.l>0&&v.w>0&&v.h>0)||!(v.cv>0)) return NEED;
+  var K=v.u==='ft'?0.3048:1, L=v.l*K, W=v.w*K, H=v.h*K;
+  var wall=2*(L+W)*H, open=(v.x||0)*K*K, area=Math.max(0,wall-open);
+  var litres=area*(v.c||1)/v.cv;
+  return [['Paintable wall area (m²)',X.N(area,2)],['Coats',String(v.c||1)],['Paint needed (litres)',X.N(litres,2)],['Round up to buy (litres)',String(Math.ceil(litres))]];
+}});
+def('tile',{ f:[
+  {k:'l',l:'Room length (metres)',d:4},
+  {k:'w',l:'Room width (metres)',d:3},
+  {k:'tl',l:'Tile length (cm)',d:60},
+  {k:'tw',l:'Tile width (cm)',d:60},
+  {k:'wa',l:'Waste allowance (%)',d:10}
+], fn:function(v,X){
+  if(!(v.l>0&&v.w>0&&v.tl>0&&v.tw>0)) return NEED;
+  var area=v.l*v.w, tile=(v.tl/100)*(v.tw/100), need=area*(1+(v.wa||0)/100)/tile;
+  return [['Tiles to buy',String(Math.ceil(need))],['Floor area (m²)',X.N(area,2)],['Area of one tile (m²)',X.N(tile,4)],['Area including waste (m²)',X.N(area*(1+(v.wa||0)/100),2)]];
+}});
+def('unitprice',{ f:[
+  {k:'p1',l:'Price, product A',d:12},
+  {k:'q1',l:'Quantity, product A (grams, ml or pieces)',d:500},
+  {k:'p2',l:'Price, product B',d:15},
+  {k:'q2',l:'Quantity, product B (same unit)',d:750}
+], fn:function(v,X){
+  if(!(v.q1>0&&v.q2>0)) return NEED;
+  var a=v.p1/v.q1, b=v.p2/v.q2, cheap=a<=b?'A':'B', hi=Math.max(a,b), lo=Math.min(a,b);
+  var save=hi>0?(hi-lo)/hi*100:0;
+  return [['Cheaper per unit',cheap],['Product A, per unit',X.N(a,4)],['Product B, per unit',X.N(b,4)],['Saving by choosing the cheaper one',X.N(save,1)+'%']];
+}});
+def('recipe',{ f:[
+  {k:'bs',l:'Original servings',d:4},
+  {k:'ns',l:'Servings you want',d:6},
+  {k:'i1',l:'Ingredient 1 amount (for original servings)',d:200},
+  {k:'i2',l:'Ingredient 2 amount (for original servings)',d:100},
+  {k:'i3',l:'Ingredient 3 amount (for original servings)',d:2,opt:1}
+], fn:function(v,X){
+  if(!(v.bs>0&&v.ns>0)) return NEED;
+  var f=v.ns/v.bs;
+  var rows=[['Scale factor','×'+X.N(f,2)],['Ingredient 1 for new servings',X.N((v.i1||0)*f,1)],['Ingredient 2 for new servings',X.N((v.i2||0)*f,1)]];
+  if(v.i3>0) rows.push(['Ingredient 3 for new servings',X.N(v.i3*f,1)]);
+  return rows;
+}});
+
+
 def('carloan',{ f:[
   {k:'p',l:'Car price ({c})',d:function(R){return R.cur==='INR'?1200000:sc(R.cur,35000);}},
   {k:'d',l:'Down payment ({c})',d:function(R){return R.cur==='INR'?200000:sc(R.cur,5000);},opt:1},
@@ -386,7 +438,7 @@ def('currency',{ f:[
   if(isNaN(v.amt)||!RATES[v.from]||!RATES[v.to]) return NEED;
   var r=RATES[v.to]/RATES[v.from], rows=[['Converted amount',X.M(v.amt*r,null,v.to),1],['Exchange rate','1 '+v.from+' = '+X.N(r,r<1?5:4)+' '+v.to],['Inverse rate','1 '+v.to+' = '+X.N(1/r,1/r<1?5:4)+' '+v.from]];
   [10,100,1000,10000].forEach(function(a){ rows.push([X.N(a,0)+' '+v.from,X.M(a*r,null,v.to)]); });
-  rows.push(['Rates',RMETA.live?X.T('Live, updated {t}',{t:RMETA.upd}):'Built-in approximate rates (live service not reachable)']);
+  rows.push(['Rates',RMETA.live?X.T('Rates from open.er-api.com, updated {t}',{t:RMETA.upd}):'Built-in approximate rates (live service not reachable)']);
   return rows; }});
 
 def('gst',{ f:[
@@ -412,7 +464,7 @@ def('eosb',{ fixCur:'SAR', f:[
   var p=ymd(s,e), yrs=p[0]+p[1]/12+p[2]/365;
   var full=yrs<=5?0.5*v.w*yrs:0.5*v.w*5+v.w*(yrs-5), f=1, tag='Full award';
   if(v.ty==='dismiss'){ return [['End-of-service award',X.M(0),1],['Service period',X.T('{y} years, {m} months, {d} days',{y:p[0],m:p[1],d:p[2]})],['Share applied',"Nothing (Article 80 dismissal)"]]; }
-  if(v.ty==='resign'){ if(yrs<2){ f=0; tag='Nothing (under 2 years)'; } else if(yrs<5){ f=1/3; tag='One third'; } else if(yrs<10){ f=2/3; tag='Two thirds'; } else { f=1; tag='Full award (10 years or more)'; } }
+  if(v.ty==='resign'){ if(yrs<2){ f=0; tag='Nothing (under 2 years)'; } else if(yrs<=5){ f=1/3; tag='One third'; } else if(yrs<10){ f=2/3; tag='Two thirds'; } else { f=1; tag='Full award (10 years or more)'; } }
   var due=full*f;
   return [['End-of-service award',X.M(due),1],['Service period',X.T('{y} years, {m} months, {d} days',{y:p[0],m:p[1],d:p[2]})],['Full award before resignation reduction',X.M(full)],['Share applied',tag],['Equal to',X.T('{n} months of wage',{n:X.N(due/v.w,2)})]]; }});
 
@@ -592,22 +644,31 @@ def('bahrain',{ fixCur:'BHD', f:[
 
 var GOLD_CUR=['SAR','AED','QAR','KWD','OMR','BHD','INR','USD','GBP','EUR','CAD','AUD'];
 def('gold',{ f:[
+  {k:'m',t:'s',l:'Metal',o:[['gold','Gold'],['silver','Silver']],d:'gold'},
   {k:'c',t:'s',l:'Currency',o:GOLD_CUR.map(function(c){return [c,c+' - '+CUR[c][0]];}),d:function(R){return GOLD_CUR.indexOf(R.cur)>-1?R.cur:'USD';}},
-  {k:'wt',l:'Weight of gold',d:10},
+  {k:'wt',l:'Weight',d:10},
   {k:'wu',t:'s',l:'Weight unit',o:[['g','Grams'],['tola','Tola (11.66 g)'],['oz','Troy ounce (31.1 g)'],['kg','Kilograms']],d:'g'},
-  {k:'k',t:'s',l:'Purity (karat)',o:[['24','24K (pure, 99.9%)'],['22','22K (91.6%)'],['21','21K (87.5%)'],['18','18K (75%)']],d:function(R){return R.cur==='INR'||R.cur==='AED'||R.cur==='QAR'?'22':(R.cur==='SAR'||R.cur==='KWD'||R.cur==='OMR'||R.cur==='BHD')?'21':'24';}},
-  {k:'mk',l:'Making charges (%), for jewellery',d:0,opt:1},
-  {k:'gp',l:'24K price per gram, optional (type it to replace the live price)',d:0,opt:1}
+  {k:'k',t:'s',l:'Purity',o:function(v){ return v.m==='silver'?[['999','Fine silver (99.9%)'],['925','Sterling silver (92.5%)'],['900','Coin silver (90%)'],['800','800 silver (80%)']]:[['24','24K (pure, 99.9%)'],['22','22K (91.6%)'],['21','21K (87.5%)'],['18','18K (75%)']]; },
+   d:function(R){ if(R.m==='silver') return '925'; return R.cur==='INR'||R.cur==='AED'||R.cur==='QAR'?'22':(R.cur==='SAR'||R.cur==='KWD'||R.cur==='OMR'||R.cur==='BHD')?'21':'24'; }},
 ], fn:function(v,X){
   var f={g:1,tola:11.6638038,oz:31.1034768,kg:1000}[v.wu]||1, grams=v.wt*f;
   if(!(v.wt>0)) return NEED;
-  var rate=(RATES[v.c]||1)/(RATES.USD||1), live=METALS.xau>0?METALS.xau/31.1034768*rate:0, p24=v.gp>0?v.gp:live;
-  if(!(p24>0)) return {err:'The live gold price is not available right now. Please type today\'s 24K price per gram in the last box.'};
-  var pure=grams*(v.k/24), total=pure*p24*(1+(v.mk||0)/100), M=function(n){ return X.M(n,null,v.c); };
-  var rows=[['Value of your gold',M(total),1],['24K per gram',M(p24)],['22K per gram',M(p24*22/24)],['21K per gram',M(p24*21/24)],['18K per gram',M(p24*18/24)],
-    ['24K per tola',M(p24*11.6638038)],['24K per ounce',M(p24*31.1034768)],['Pure gold in your piece',X.N(pure,2)+' g'],
-    ['Price used',v.gp>0?'Your own price':'Live international price, indicative']];
-  return rows; }});
+  var silver=v.m==='silver';
+  var rate=(RATES[v.c]||1)/(RATES.USD||1);
+  var liveUsd=silver?METALS.xag:METALS.xau;
+  var live=liveUsd>0?liveUsd/31.1034768*rate:0;
+  var p=live;
+  if(!(p>0)) return {err:'The live '+(silver?'silver':'gold')+' price is not available right now. Please try again in a few minutes.'};
+  var fraction=silver?(parseFloat(v.k)/1000):(parseFloat(v.k)/24);
+  var pure=grams*fraction, total=pure*p, M=function(n){ return X.M(n,null,v.c); };
+  var source=(silver?'Silver price from gold-api.com (indicative)':'Gold price from gold-api.com (indicative)');
+  if(silver){
+    return [['Value of your silver',M(total),1],['Pure price per gram',M(p)],['Price per tola',M(p*11.6638038)],['Price per troy ounce',M(p*31.1034768)],
+      ['Pure silver in your piece',X.N(pure,2)+' g'],['Price used',source]];
+  }
+  return [['Value of your gold',M(total),1],['24K per gram',M(p)],['22K per gram',M(p*22/24)],['21K per gram',M(p*21/24)],['18K per gram',M(p*18/24)],
+    ['24K per tola',M(p*11.6638038)],['24K per ounce',M(p*31.1034768)],['Pure gold in your piece',X.N(pure,2)+' g'],['Price used',source]];
+}});
 
 def('kuwait',{ fixCur:'KWD', f:[
   {k:'w',l:'Last monthly wage ({c})',d:600},
