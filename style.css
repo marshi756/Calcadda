@@ -1099,3 +1099,11 @@ footer{ border-top:1px solid var(--line); background:var(--surface); }
 .cat-tab:hover{ border-color:var(--blue); }
 .cat-tab.on{ background:linear-gradient(135deg,var(--navy),var(--navy-2)); color:#fff; border-color:transparent; box-shadow:0 8px 18px -8px rgba(11,37,69,.5); }
 .cat-sec[hidden]{ display:none; }
+
+/* v38: Gold / Silver switch inside the calculator card */
+.metal-switch{ display:flex; gap:6px; background:var(--field); border:1px solid var(--line); border-radius:999px; padding:4px; margin:0 0 14px; }
+.metal-switch button{ flex:1; border:none; background:transparent; color:var(--muted); padding:10px 12px; border-radius:999px; font-weight:800; font-size:15px; min-height:44px; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:all .18s ease; }
+.metal-switch button.on{ background:var(--surface); color:var(--ink); box-shadow:0 6px 16px -8px rgba(11,37,69,.35); }
+.metal-switch .dot{ width:12px; height:12px; border-radius:50%; display:inline-block; }
+.metal-switch .dot.gold{ background:linear-gradient(135deg,#FCD34D,#B7791F); }
+.metal-switch .dot.silver{ background:linear-gradient(135deg,#E5E7EB,#6B7280); }
