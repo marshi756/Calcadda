@@ -62,8 +62,10 @@ function guessCur(){
   if(tz==='Asia/Kolkata'||tz==='Asia/Calcutta') return 'INR';
   if(tz==='Asia/Riyadh') return 'SAR';
   if(tz==='Asia/Dubai') return 'AED';
+  var TZ={'Asia/Karachi':'PKR','Asia/Dhaka':'BDT','Asia/Kathmandu':'NPR','Asia/Colombo':'LKR','Asia/Qatar':'QAR','Asia/Kuwait':'KWD','Asia/Muscat':'OMR','Asia/Bahrain':'BHD','Europe/London':'GBP','America/Toronto':'CAD','America/Vancouver':'CAD','Australia/Sydney':'AUD','Australia/Melbourne':'AUD'};
+  if(TZ[tz]) return TZ[tz];
   var r=(lang.split('-')[1]||'').toUpperCase();
-  var m={IN:'INR',SA:'SAR',AE:'AED',GB:'GBP',CA:'CAD',AU:'AUD',QA:'QAR',KW:'KWD',BH:'BHD',OM:'OMR',SG:'SGD',NZ:'NZD',PK:'PKR',BD:'BDT'};
+  var m={IN:'INR',SA:'SAR',AE:'AED',GB:'GBP',CA:'CAD',AU:'AUD',QA:'QAR',KW:'KWD',BH:'BHD',OM:'OMR',SG:'SGD',NZ:'NZD',PK:'PKR',BD:'BDT',NP:'NPR',LK:'LKR'};
   if(m[r]) return m[r]; if(EU.indexOf(r)>-1) return 'EUR'; return 'USD';
 }
 
@@ -642,14 +644,14 @@ def('bahrain',{ fixCur:'BHD', f:[
   return [['Leaving indemnity',X.M(0.5*v.w*first+v.w*rest),1],['Service counted',X.N(y,2)+' years'],['First 3 years (half a month each)',X.M(0.5*v.w*first)],['After 3 years (one month each)',X.M(v.w*rest)],
     ['Service period',X.T('{y} years, {m} months, {d} days',{y:p[0],m:p[1],d:p[2]})]]; }});
 
-var GOLD_CUR=['SAR','AED','QAR','KWD','OMR','BHD','INR','USD','GBP','EUR','CAD','AUD'];
+var GOLD_CUR=['SAR','AED','QAR','KWD','OMR','BHD','INR','PKR','BDT','NPR','LKR','USD','GBP','EUR','CAD','AUD'];
 def('gold',{ f:[
   {k:'m',t:'s',l:'Metal',o:[['gold','Gold'],['silver','Silver']],d:'gold'},
   {k:'c',t:'s',l:'Currency',o:GOLD_CUR.map(function(c){return [c,c+' - '+CUR[c][0]];}),d:function(R){return GOLD_CUR.indexOf(R.cur)>-1?R.cur:'USD';}},
   {k:'wt',l:'Weight',d:10},
   {k:'wu',t:'s',l:'Weight unit',o:[['g','Grams'],['tola','Tola (11.66 g)'],['oz','Troy ounce (31.1 g)'],['kg','Kilograms']],d:'g'},
   {k:'k',t:'s',l:'Purity',o:function(v){ return v.m==='silver'?[['999','Fine silver (99.9%)'],['925','Sterling silver (92.5%)'],['900','Coin silver (90%)'],['800','800 silver (80%)']]:[['24','24K (pure, 99.9%)'],['22','22K (91.6%)'],['21','21K (87.5%)'],['18','18K (75%)']]; },
-   d:function(R){ if(R.m==='silver') return '925'; return R.cur==='INR'||R.cur==='AED'||R.cur==='QAR'?'22':(R.cur==='SAR'||R.cur==='KWD'||R.cur==='OMR'||R.cur==='BHD')?'21':'24'; }},
+   d:function(R){ var mt=($('f_m')&&$('f_m').value)||'gold'; var saved=sg('cp_k_'+mt); if(saved) return saved; if(R.m==='silver') return '925'; return R.cur==='INR'||R.cur==='AED'||R.cur==='QAR'?'22':(R.cur==='SAR'||R.cur==='KWD'||R.cur==='OMR'||R.cur==='BHD')?'21':'24'; }},
 ], fn:function(v,X){
   var f={g:1,tola:11.6638038,oz:31.1034768,kg:1000}[v.wu]||1, grams=v.wt*f;
   if(!(v.wt>0)) return NEED;
@@ -847,7 +849,9 @@ function build(){
   refreshFields();
 }
 function onChange(f){
-  touched[f.k]=true; var v=readVals();
+  touched[f.k]=true;
+  if(f.k==='k'){ var mt=($('f_m')&&$('f_m').value)||'gold'; ss('cp_k_'+mt,$('f_k').value); }
+  var v=readVals();
   if(f.t==='s'){
     var old=prevSel[f.k], nw=$('f_'+f.k).value;
     CAL.f.forEach(function(g){ if(g.cv&&g.cv.sel===f.k){ var e=$('f_'+g.k), x=parseFloat(e.value); if(!isNaN(x)&&old!==nw) e.value=clean(g.cv.fn(x,old,nw)); }
@@ -904,6 +908,10 @@ function initHeader(){
       OMR:['gold-rate-calculator','currency-converter','loan-calculator','hijri-gregorian-date-converter','gst-vat-calculator','time-zone-converter','gas-fuel-cost-calculator','bmi-calculator'],
       BHD:['gold-rate-calculator','currency-converter','loan-calculator','hijri-gregorian-date-converter','gst-vat-calculator','time-zone-converter','gas-fuel-cost-calculator','bmi-calculator'],
       INR:['gratuity-calculator','gold-rate-calculator','sip-calculator','fd-rd-calculator','gst-vat-calculator','loan-calculator','currency-converter','cgpa-to-percentage-calculator','bmi-calculator'],
+      PKR:['gold-rate-calculator','currency-converter','zakat-calculator','loan-calculator','compound-interest-calculator','gst-vat-calculator','percentage-calculator','cgpa-to-percentage-calculator','bmi-calculator'],
+      BDT:['currency-converter','gold-rate-calculator','loan-calculator','compound-interest-calculator','gst-vat-calculator','percentage-calculator','cgpa-to-percentage-calculator','bmi-calculator','calorie-calculator'],
+      NPR:['currency-converter','gold-rate-calculator','loan-calculator','compound-interest-calculator','gst-vat-calculator','percentage-calculator','cgpa-to-percentage-calculator','bmi-calculator','calorie-calculator'],
+      LKR:['currency-converter','gold-rate-calculator','loan-calculator','compound-interest-calculator','gst-vat-calculator','percentage-calculator','cgpa-to-percentage-calculator','bmi-calculator','calorie-calculator'],
       USD:['mortgage-calculator','loan-calculator','compound-interest-calculator','tip-calculator','bmi-calculator','calorie-calculator','discount-and-sales-tax-calculator','time-zone-converter'],
       GBP:['gst-vat-calculator','loan-calculator','mortgage-calculator','tip-calculator','unit-converter','bmi-calculator','gas-fuel-cost-calculator','currency-converter'],
       EUR:['gst-vat-calculator','currency-converter','unit-converter','gas-fuel-cost-calculator','loan-calculator','bmi-calculator','mortgage-calculator','time-zone-converter'],
@@ -913,7 +921,7 @@ function initHeader(){
     var showPop=function(cur){ [].forEach.call(chips,function(c){ c.classList.toggle('on',c.getAttribute('data-cur')===cur); }); popBox.innerHTML='';
       (POP[cur]||POP.USD).forEach(function(f){ var a=tmap[f]; if(a) popBox.appendChild(a.cloneNode(true)); }); popSec.hidden=!popBox.children.length; };
     [].forEach.call(chips,function(c){ c.addEventListener('click',function(){ var cur=c.getAttribute('data-cur'); R.cur=cur; ss('cp_cur',cur); var sel=$('cp-cur'); if(sel) sel.value=cur; showPop(cur); popSec.scrollIntoView({behavior:'smooth',block:'start'}); }); });
-    if(sg('cp_cur')) showPop(R.cur); else popSec.hidden=true;
+    showPop(R.cur);
   }
   var es=$('eos-switch'); if(es) es.addEventListener('change',function(){ if(es.value) location.href=es.value; });
   var q=$('cp-search');

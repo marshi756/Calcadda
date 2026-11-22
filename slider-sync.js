@@ -9,10 +9,10 @@
   }
   function enhance(input){
     if(input.dataset.slider) return;
-    var lbl=(wrap.querySelector('label')||{}).textContent||'';
-    if(/optional|type it/i.test(lbl)) return;   /* optional price fields: no slider, so dragging can't overwrite a live price */
     if(input.type!=='number') return;
     var wrap=input.closest(".f"); if(!wrap) return;
+    var lbl=(wrap.querySelector('label')||{}).textContent||'';
+    if(/optional|type it/i.test(lbl)) return;   /* optional price fields: no slider, so dragging can't overwrite a live price */
     input.dataset.slider='1';
     var v=parseFloat(input.value); if(isNaN(v)) v=0;
     var min=input.hasAttribute('min')?parseFloat(input.min):(v<0?v*3:0);
